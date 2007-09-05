@@ -66,6 +66,7 @@ setup(
 
     dependency_links = [
     'http://schevo.org/files/thirdparty/',
+    'http://schevo.org/wiki/SchevoDurus',
     ],
 
     entry_points = """
