@@ -53,7 +53,7 @@ setup(
     zip_safe=False,
 
     install_requires=[
-    'Durus == 3.7-schevo1',
+    'Durus == 3.7-schevo2',
     ],
 
     tests_require=[
