@@ -16,8 +16,7 @@ setup(
     SchevoDurus provides integration between the Durus_ object database
     for Python and the Schevo_ DBMS.
 
-    The latest development version is available in a `Subversion
-    repository 
+    You can also get the `latest development version
     <http://getschevo.org/hg/repos.cgi/schevodurus-dev/archive/tip.tar.gz#egg=SchevoDurus-dev>`__.
 
     .. _Schevo: http://schevo.org/
