@@ -19,6 +19,14 @@ setup(
     You can also get the `latest development version
     <http://getschevo.org/hg/repos.cgi/schevodurus-dev/archive/tip.tar.gz#egg=SchevoDurus-dev>`__.
 
+    At the moment, it depends on a `friendly fork of Durus 3.7
+    <http://getschevo.org/hg/repos.cgi/durusfork-dev/archive/3.7-schevo2.tar.gz#egg=Durus-3.7-schevo2>`__
+    (`Windows Python 2.5 egg
+    <http://getschevo.org/eggs/Durus-3.7_schevo2-py2.5-win32.egg>`__ and
+    `latest development version
+    <http://getschevo.org/hg/repos.cgi/durusfork-dev/archive/tip.tar.gz#egg=Durus-dev>`__
+    also available).
+
     .. _Schevo: http://schevo.org/
 
     .. _Durus: http://www.mems-exchange.org/software/durus/
@@ -65,6 +73,8 @@ setup(
     },
 
     dependency_links = [
+    'http://pypi.python.org/pypi/SchevoDurus',
+    'http://getschevo.org/eggs/',
     ],
 
     entry_points = """
