@@ -17,7 +17,8 @@ setup(
     for Python and the Schevo_ DBMS.
 
     The latest development version is available in a `Subversion
-    repository <http://schevo.org/svn/trunk/Durus#egg=SchevoDurus-dev>`__.
+    repository 
+    <http://getschevo.org/hg/repos.cgi/schevodurus-dev/archive/tip.tar.gz#egg=SchevoDurus-dev>`__.
 
     .. _Schevo: http://schevo.org/
 
