@@ -3,6 +3,9 @@
 For copyright, license, and warranty, see bottom of file.
 """
 
+import os
+import sys
+
 from durus.btree import BTree
 ## from durus.client_storage import ClientStorage
 from durus.connection import Connection
@@ -10,11 +13,19 @@ from durus.file_storage import FileStorage, ShelfStorage
 from durus.persistent_dict import PersistentDict
 from durus.persistent_list import PersistentList
 
+from schevo.error import DatabaseFileLocked
+
 from schevodurus.backend_test_classes import (
     TestMethods_CreatesDatabase,
     TestMethods_CreatesSchema,
     TestMethods_EvolvesSchemata,
     )
+
+if sys.platform == 'win32':
+    import pywintypes
+    FileLockedError = pywintypes.error
+else:
+    FileLockedError = IOError
 
 
 DEFAULT_CACHE_SIZE = 100000
@@ -121,6 +132,18 @@ class DurusBackend(object):
         if not self._is_open:
             self.storage = getattr(self, '_open_' + self._storage)(
                 self._filename)
+            try:
+                shelf = getattr(self.storage, 'shelf', None)
+                if shelf is not None:
+                    # Using shelf storage; storage's 'shelf' attribute
+                    # has the file.
+                    shelf.file.obtain_lock()
+                else:
+                    # Using file storage; storage's 'fp' attribute is
+                    # the file.
+                    self.storage.fp.obtain_lock()
+            except FileLockedError, e:
+                raise DatabaseFileLocked()
             self.conn = Connection(self.storage, cache_size=self._cache_size)
             self._is_open = True
 
