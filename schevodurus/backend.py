@@ -96,9 +96,17 @@ class DurusBackend(object):
         """Return (`True`, *additional backend args*) if the named
         file is usable by this backend, or `False` if not."""
         # Get first 128 bytes of file.
-        f = open(filename, 'rb')
-        header = f.read(128)
-        f.close()
+        try:
+            f = open(filename, 'rb')
+            try:
+                header = f.read(128)
+            except IOError:
+                if sys.platform == 'win32':
+                    raise DatabaseFileLocked()
+                else:
+                    raise
+        finally:
+            f.close()
         # Look for Durus file storage or shelf storage signature and
         # durus module signature.
         if 'durus.persistent_dict' in header:
