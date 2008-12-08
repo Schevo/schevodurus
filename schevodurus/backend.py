@@ -6,8 +6,12 @@ For copyright, license, and warranty, see bottom of file.
 import os
 import sys
 
+# Set Durus logging level before importing rest of Durus.
+from durus.logger import logger
+from logging import ERROR
+logger.setLevel(ERROR)
+
 from durus.btree import BTree
-## from durus.client_storage import ClientStorage
 from durus.connection import Connection
 from durus.file_storage import FileStorage, ShelfStorage
 from durus.persistent_dict import PersistentDict
