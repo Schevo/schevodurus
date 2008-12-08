@@ -61,7 +61,7 @@ setup(
     zip_safe=False,
 
     install_requires=[
-    'Durus == 3.7-schevo2',
+    'Durus == 3.8',
     ],
 
     tests_require=[
