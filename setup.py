@@ -17,15 +17,16 @@ setup(
     for Python and the Schevo_ DBMS.
 
     You can also get the `latest development version
-    <http://getschevo.org/hg/repos.cgi/schevodurus-dev/archive/tip.tar.gz#egg=SchevoDurus-dev>`__.
+    <http://github.com/gldnspud/schevodurus/zipball/master#egg=SchevoDurus-dev>`__.
 
-    At the moment, it depends on a `friendly fork of Durus 3.7
-    <http://getschevo.org/hg/repos.cgi/durusfork-dev/archive/3.7-schevo2.tar.gz#egg=Durus-3.7-schevo2>`__
-    (`Windows Python 2.5 egg
-    <http://getschevo.org/eggs/Durus-3.7_schevo2-py2.5-win32.egg>`__ and
-    `latest development version
-    <http://getschevo.org/hg/repos.cgi/durusfork-dev/archive/tip.tar.gz#egg=Durus-dev>`__
-    also available).
+    SchevoDurus depends on Durus 3.8.
+    We maintain a `copy of Durus on github <http://github.com/gldnspud/durus/>`__
+    and for your convenience provide a
+    `Windows Python 2.5 egg
+    <http://www.schevo.org/eggs/Durus-3.8-py2.5-win32.egg>`__
+    and a
+    `Mac OS X 10.5 Python 2.5 i386 egg
+    <http://www.schevo.org/eggs/Durus-3.8-py2.5-macosx-10.5-i386.egg>`__.
 
     .. _Schevo: http://schevo.org/
 
@@ -48,7 +49,7 @@ setup(
     author='Orbtech, L.L.C. and contributors',
     author_email='schevo@googlegroups.com',
 
-    url='http://schevo.org/wiki/SchevoDurus',
+    url='http://www.schevo.org/wiki/SchevoDurus',
 
     license='LGPL',
 
