@@ -74,7 +74,7 @@ setup(
 
     dependency_links = [
     'http://pypi.python.org/pypi/SchevoDurus',
-    'http://getschevo.org/eggs/',
+    'http://www.schevo.org/eggs/',
     ],
 
     entry_points = """
