@@ -37,7 +37,7 @@ DEFAULT_CACHE_SIZE = 100000
 
 class DurusBackend(object):
 
-    description = 'Backend that directly uses Durus 3.7'
+    description = 'Backend that directly uses Durus 3.8'
     backend_args_help = """
     cache_size=SIZE
         Set the size of the in-memory object cache to SIZE, which is an
