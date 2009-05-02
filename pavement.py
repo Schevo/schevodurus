@@ -7,8 +7,10 @@ from textwrap import dedent
 
 from setuptools import Extension, find_packages
 
+from schevodurus.release import VERSION
 
-VERSION = DOCVERSION = '3.1'
+
+DOCVERSION = VERSION
 DEVELOPMENT = True
 
 
