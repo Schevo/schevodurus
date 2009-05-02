@@ -8,7 +8,7 @@ from textwrap import dedent
 from setuptools import Extension, find_packages
 
 
-VERSION = '3.1'
+VERSION = DOCVERSION = '3.1'
 DEVELOPMENT = True
 
 
@@ -21,10 +21,10 @@ if DEVELOPMENT:
         name, value = contents.split()
         BRANCH = value.split('/')[-1]
         if BRANCH != 'master':
-            VERSION += '-' + BRANCH
+            DOCVERSION += '-' + BRANCH
     except:
         pass
-    VERSION += '-dev'
+    DOCVERSION += '-dev'
 
 
 setup(
@@ -98,7 +98,7 @@ options(
     publish=Bunch(
         username='schevo',
         server='web7.webfaction.com',
-        path='/home2/schevo/schevo_docs/schevodurus/%s' % VERSION,
+        path='/home2/schevo/schevo_docs/schevodurus/%s' % DOCVERSION,
     ),
     sphinx=Bunch(
         docroot='doc',
