@@ -9,25 +9,13 @@ from schevo.lib import optimize
 from schevo.test.library import storage_classes
 
 
-locals().update(storage_classes(class_label='durus-shelf-1',
+locals().update(storage_classes(class_label='durus-1',
                                 backend_name='durus',
                                 format=1,
-                                backend_args=dict(storage='shelf'),
                                 ))
-locals().update(storage_classes(class_label='durus-shelf-2',
+locals().update(storage_classes(class_label='durus-2',
                                 backend_name='durus',
                                 format=2,
-                                backend_args=dict(storage='shelf'),
-                                ))
-locals().update(storage_classes(class_label='durus-file-1',
-                                backend_name='durus',
-                                format=1,
-                                backend_args=dict(storage='file'),
-                                ))
-locals().update(storage_classes(class_label='durus-file-2',
-                                backend_name='durus',
-                                format=2,
-                                backend_args=dict(storage='file'),
                                 ))
 
 

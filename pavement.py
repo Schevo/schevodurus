@@ -46,7 +46,7 @@ else:
         You can also get the `latest development version
         <http://github.com/gldnspud/schevodurus/zipball/master#egg=SchevoDurus-dev>`__.
 
-        SchevoDurus depends on Durus 3.8.
+        SchevoDurus depends on Durus 3.9.
         We maintain a `copy of Durus on github <http://github.com/gldnspud/durus/>`__
         and for your convenience provide a
         `Windows Python 2.5 egg
@@ -79,7 +79,7 @@ else:
         include_package_data=True,
         zip_safe=False,
         install_requires=[
-            'Durus == 3.8',
+            'Durus >= 3.9',
         ],
         dependency_links = [
             'http://pypi.python.org/pypi/SchevoDurus',

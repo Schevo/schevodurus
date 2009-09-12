@@ -13,7 +13,7 @@ logger.setLevel(ERROR)
 
 from durus.btree import BTree
 from durus.connection import Connection
-from durus.file_storage import FileStorage, ShelfStorage
+from durus.file_storage import FileStorage
 from durus.persistent_dict import PersistentDict
 from durus.persistent_list import PersistentList
 
@@ -43,12 +43,6 @@ class DurusBackend(object):
         Set the size of the in-memory object cache to SIZE, which is an
         integer specifying the maximum number of objects to keep in the
         cache.
-    storage=TYPE
-        Set the type of storage to use when creating a new database.
-        Two types of storage are available:
-        - 'shelf' (default) decreases startup time and reduces memory
-          pressure by using the durus.file_storage.ShelfStorage class.
-        - 'file' uses the traditional durus.file_storage.FileStorage class.
     """
 
     __test__ = False
@@ -61,19 +55,14 @@ class DurusBackend(object):
     TestMethods_CreatesSchema = TestMethods_CreatesSchema
     TestMethods_EvolvesSchemata = TestMethods_EvolvesSchemata
 
-    def __init__(self, filename, storage='shelf',
-                 cache_size=DEFAULT_CACHE_SIZE):
+    def __init__(self, filename, cache_size=DEFAULT_CACHE_SIZE):
         """Create a new `DurussBackend` instance.
 
         - `filename`: Name of file to open with this backend.
-        - `storage`: Type of Durus storage to use.  May be either
-          `'shelf'` or `'file'`. `'shelf'` has shorter startup time
-          for a packed database and is the default.
         - `cache_size`: Maximum number of objects to keep in the
           in-memory object cache.
         """
         self._filename = filename
-        self._storage = storage
         self._cache_size = cache_size
         self._is_open = False
         self.open()
@@ -111,13 +100,11 @@ class DurusBackend(object):
                     raise
         finally:
             f.close()
-        # Look for Durus file storage or shelf storage signature and
+        # Look for Durus shelf storage signature and
         # durus module signature.
         if 'durus.persistent_dict' in header:
-            if header[:5] == 'DFS20':
-                return (True, dict(storage='file'))
-            elif header[:7] == 'SHELF-1':
-                return (True, dict(storage='shelf'))
+            if header[:7] == 'SHELF-1':
+                return (True, {})
         return False
 
     @property
@@ -142,28 +129,13 @@ class DurusBackend(object):
     def open(self):
         """Open the underlying storage based on initial arguments."""
         if not self._is_open:
-            self.storage = getattr(self, '_open_' + self._storage)(
-                self._filename)
+            self.storage = FileStorage(self._filename)
             try:
-                shelf = getattr(self.storage, 'shelf', None)
-                if shelf is not None:
-                    # Using shelf storage; storage's 'shelf' attribute
-                    # has the file.
-                    shelf.file.obtain_lock()
-                else:
-                    # Using file storage; storage's 'fp' attribute is
-                    # the file.
-                    self.storage.fp.obtain_lock()
+                self.storage.shelf.file.obtain_lock()
             except FileLockedError, e:
                 raise DatabaseFileLocked()
             self.conn = Connection(self.storage, cache_size=self._cache_size)
             self._is_open = True
-
-    def _open_file(self, filename):
-        return FileStorage(filename)
-
-    def _open_shelf(self, filename):
-        return ShelfStorage(filename)
 
     def pack(self):
         """Pack the underlying storage."""
