@@ -23,9 +23,12 @@ import duruses.client
 from schevo.error import DatabaseFileLocked
 
 from schevodurus.backend_test_classes import (
-    TestMethods_CreatesDatabase,
-    TestMethods_CreatesSchema,
-    TestMethods_EvolvesSchemata,
+    Durus_TestMethods_CreatesDatabase,
+    Durus_TestMethods_CreatesSchema,
+    Durus_TestMethods_EvolvesSchemata,
+#     Duruses_TestMethods_CreatesDatabase,
+#     Duruses_TestMethods_CreatesSchema,
+#     Duruses_TestMethods_EvolvesSchemata,
     )
 
 if sys.platform == 'win32':
@@ -33,6 +36,13 @@ if sys.platform == 'win32':
     FileLockedError = pywintypes.error
 else:
     FileLockedError = IOError
+
+
+def _random_filename():
+    f = File(prefix='schevodurus')
+    n = f.get_name()
+    f.close()
+    return n
 
 
 class DurusBackend(object):
@@ -45,41 +55,16 @@ class DurusBackend(object):
     """
 
     DEFAULT_CACHE_SIZE = 100000
-    DEFAULT_DURUSES_PORT = duruses.client.DEFAULT_PORT
 
     description = __doc__.splitlines()[0].strip()
     backend_args_help = """
-    Common options:
+    Use "durus:///:temp:" for a temporary file with a random name.
 
-        readonly=False (bool)
-            Whether or not to use database in readonly mode.
+    cache_size=%(DEFAULT_CACHE_SIZE)i (int)
+        Maximum number of objects to keep in the cache.
 
-    Options for using single-process files on disk:
-
-        cache_size=%(DEFAULT_CACHE_SIZE)i (int)
-            Maximum number of objects to keep in the cache.
-
-    Options for using a pre-existing Durus storage instance:
-    Filename is ignored when Durus options are used.
-
-        durus_storage=None (durus.storage.Storage instance)
-            An existing Durus storage instance to use.
-
-    Options for using a Duruses server:
-    Filename is ignored when duruses options are used.
-
-        duruses_db_name=None (str)
-            Name of the Duruses database to use.
-
-        duruses_host=None (str)
-            Host name of the Duruses server to connect to.
-            Combined with duruses_port, creates a new client connection.
-
-        duruses_port=%(DEFAULT_DURUSES_PORT)i (int)
-            Port of the Duruses server to connect to.
-
-        duruses_client=None (duruses.client.Client instance)
-            An existing client connection to use.
+    storage=None (durus.storage.Storage instance)
+        An existing Durus storage instance to use.
     """ % locals()
 
     __test__ = False
@@ -90,49 +75,22 @@ class DurusBackend(object):
 
     conflict_exceptions = (ConflictError,)
 
-    TestMethods_CreatesDatabase = TestMethods_CreatesDatabase
-    TestMethods_CreatesSchema = TestMethods_CreatesSchema
-    TestMethods_EvolvesSchemata = TestMethods_EvolvesSchemata
+    TestMethods_CreatesDatabase = Durus_TestMethods_CreatesDatabase
+    TestMethods_CreatesSchema = Durus_TestMethods_CreatesSchema
+    TestMethods_EvolvesSchemata = Durus_TestMethods_EvolvesSchemata
 
-    def __init__(self, filename,
-                 readonly=False,
+    def __init__(self,
+                 database,
                  cache_size=DEFAULT_CACHE_SIZE,
-                 durus_storage=None,
-                 duruses_db_name=None,
-                 duruses_host=None, duruses_port=DEFAULT_DURUSES_PORT,
-                 duruses_client=None):
-        """Create a new `DurusBackend` instance"""
-        self._filename = filename
-        self._readonly = readonly
-        self._cache_size = cache_size
-        self._durus_storage = durus_storage
-        self._duruses_db_name = duruses_db_name
-        self._duruses_host = duruses_host
-        self._duruses_port = duruses_port
-        self._duruses_client = duruses_client
-        self._is_open = False
+                 storage=None,
+                 ):
+        if database == ':temp:':
+            database = _random_filename()
+        self.database = database
+        self.cache_size = cache_size
+        self.storage = storage
+        self.is_open = False
         self.open()
-
-    @classmethod
-    def args_from_string(cls, s):
-        """Return a dictionary of keyword arguments based on a string given
-        to a command-line tool."""
-        kw = {}
-        if s is not None:
-            for arg in (p.strip() for p in s.split(',')):
-                name, value = (p2.strip() for p2 in arg.split('='))
-                if name == 'cache_size':
-                    kw[name] = int(value)
-                elif name == 'duruses_host':
-                    kw[name] = value
-                elif name == 'duruses_port':
-                    kw[name] = int(value)
-                elif name == 'duruses_db_name':
-                    kw[name] = value
-                else:
-                    raise KeyError(
-                        '%s is not a valid name for backend args' % name)
-        return kw
 
     @classmethod
     def usable_by_backend(cls, filename):
@@ -166,7 +124,7 @@ class DurusBackend(object):
         """Close the underlying storage (and the connection if
         needed)."""
         self.storage.close()
-        self._is_open = False
+        self.is_open = False
 
     def commit(self):
         """Commit the current transaction."""
@@ -178,29 +136,107 @@ class DurusBackend(object):
 
     def open(self):
         """Open the underlying storage based on initial arguments."""
-        if not self._is_open:
+        if not self.is_open:
             # Find or create storage.
-            if self._durus_storage is not None:
-                self.storage = self._durus_storage
-            elif None not in (self._duruses_host, self._duruses_port,
-                              self._duruses_db_name):
-                self._duruses_client = duruses.client.Client(
-                    self._duruses_host, self._duruses_port)
-                self.storage = self._duruses_client.storage(
-                    self._duruses_db_name)
-            elif None not in (self._duruses_client, self._duruses_db_name):
-                self.storage = self._duruses_client.storage(
-                    self._duruses_db_name)
-            else:
+            if self.storage is None:
                 try:
-                    self.storage = FileStorage(self._filename)
+                    self.storage = FileStorage(self.database)
                     self.storage.shelf.file.obtain_lock()
                 except FileLockedError, e:
                     raise DatabaseFileLocked()
             # Connect to storage.
             self.conn = Connection(
-                self.storage, cache_size=self._cache_size)
-            self._is_open = True
+                self.storage, cache_size=self.cache_size)
+            self.is_open = True
+
+    def pack(self):
+        """Pack the underlying storage."""
+        self.conn.pack()
+
+    def rollback(self):
+        """Abort the current transaction."""
+        self.conn.abort()
+
+
+class DurusesBackend(object):
+    """Schevo backend that directly uses Duruses 3.9."""
+
+    DEFAULT_CACHE_SIZE = 100000
+
+    description = __doc__.splitlines()[0].strip()
+    backend_args_help = """
+    cache_size=%(DEFAULT_CACHE_SIZE)i (int)
+        Maximum number of objects to keep in the cache.
+
+    client=None (duruses.client.Client instance)
+        An existing client connection to use; overrides host and port in URL.
+    """ % locals()
+
+    __test__ = False
+
+    BTree = BTree
+    PDict = PersistentDict
+    PList = PersistentList
+
+    conflict_exceptions = (ConflictError,)
+
+#     TestMethods_CreatesDatabase = Duruses_TestMethods_CreatesDatabase
+#     TestMethods_CreatesSchema = Duruses_TestMethods_CreatesSchema
+#     TestMethods_EvolvesSchemata = Duruses_TestMethods_EvolvesSchemata
+
+    def __init__(self,
+                 database,
+                 cache_size=DEFAULT_CACHE_SIZE,
+                 host=duruses.client.DEFAULT_HOST,
+                 port=duruses.client.DEFAULT_PORT,
+                 client=None,
+                 ):
+        self.database = database
+        self.cache_size = cache_size
+        self.host = host
+        self.port = port
+        self.client = client
+        self.is_open = False
+        self.open()
+
+    @classmethod
+    def usable_by_backend(cls, filename):
+        """Return (`True`, *additional backend args*) if the named
+        file is usable by this backend, or `False` if not."""
+        return False
+
+    @property
+    def has_db(self):
+        """Return `True` if the backend contains a Schevo database."""
+        return self.get_root().has_key('SCHEVO')
+
+    def close(self):
+        """Close the underlying storage (and the connection if
+        needed)."""
+        self.storage.close()
+        self.is_open = False
+
+    def commit(self):
+        """Commit the current transaction."""
+        self.conn.commit()
+
+    def get_root(self):
+        """Return the backend's `root` object."""
+        return self.conn.get_root()
+
+    def open(self):
+        """Open the underlying storage based on initial arguments."""
+        if not self.is_open:
+            # Find or create storage.
+            if self.client is not None:
+                self.storage = self.client.storage(self.database)
+            elif None not in (self.host, self.port):
+                self.client = duruses.client.Client(self.host, self.port)
+                self.storage = self.client.storage(self.database)
+            # Connect to storage.
+            self.conn = Connection(
+                self.storage, cache_size=self.cache_size)
+            self.is_open = True
 
     def pack(self):
         """Pack the underlying storage."""

@@ -93,6 +93,7 @@ else:
         entry_points = """
         [schevo.backend]
         durus = schevodurus.backend:DurusBackend
+        duruses = schevodurus.backend:DurusesBackend
         """,
         )
 
