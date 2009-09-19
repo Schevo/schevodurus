@@ -79,7 +79,7 @@ else:
         include_package_data=True,
         zip_safe=False,
         install_requires=[
-            'Durus >= 3.9',
+            'duruses >= 3.9',
         ],
         dependency_links = [
             'http://pypi.python.org/pypi/SchevoDurus',
