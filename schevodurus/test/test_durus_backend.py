@@ -9,10 +9,10 @@ from schevo.lib import optimize
 from schevo.test.library import storage_classes
 
 
-locals().update(storage_classes(class_label='durus-1',
-                                backend_name='durus',
-                                format=1,
-                                ))
+# locals().update(storage_classes(class_label='durus-1',
+#                                 backend_name='durus',
+#                                 format=1,
+#                                 ))
 locals().update(storage_classes(class_label='durus-2',
                                 backend_name='durus',
                                 format=2,
