@@ -93,7 +93,7 @@ else:
         entry_points = """
         [schevo.backend]
         durus = schevodurus.backend:DurusBackend
-        xdclient = schevodurus.backend:XdserverBackend
+        xdserver = schevodurus.backend:XdserverBackend
         """,
         )
 

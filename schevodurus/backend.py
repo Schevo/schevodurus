@@ -18,7 +18,7 @@ from durus.file_storage import FileStorage
 from durus.persistent_dict import PersistentDict
 from durus.persistent_list import PersistentList
 
-import xdclient.client
+import xdserver.client
 
 from schevo.error import DatabaseFileLocked
 
@@ -168,7 +168,7 @@ class XdserverBackend(object):
     cache_size=%(DEFAULT_CACHE_SIZE)i (int)
         Maximum number of objects to keep in the cache.
 
-    client=None (xdclient.client.Client instance)
+    client=None (xdserver.client.Client instance)
         An existing client connection to use; overrides host and port in URL.
     """ % locals()
 
@@ -187,8 +187,8 @@ class XdserverBackend(object):
     def __init__(self,
                  database,
                  cache_size=DEFAULT_CACHE_SIZE,
-                 host=xdclient.client.DEFAULT_HOST,
-                 port=xdclient.client.DEFAULT_PORT,
+                 host=xdserver.client.DEFAULT_HOST,
+                 port=xdserver.client.DEFAULT_PORT,
                  client=None,
                  ):
         self.database = database
@@ -231,7 +231,7 @@ class XdserverBackend(object):
             if self.client is not None:
                 self.storage = self.client.storage(self.database)
             elif None not in (self.host, self.port):
-                self.client = xdclient.client.Client(self.host, self.port)
+                self.client = xdserver.client.Client(self.host, self.port)
                 self.storage = self.client.storage(self.database)
             # Connect to storage.
             self.conn = Connection(
