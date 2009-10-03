@@ -18,7 +18,7 @@ from durus.file_storage import FileStorage
 from durus.persistent_dict import PersistentDict
 from durus.persistent_list import PersistentList
 
-import duruses.client
+import xdclient.client
 
 from schevo.error import DatabaseFileLocked
 
@@ -26,9 +26,9 @@ from schevodurus.backend_test_classes import (
     Durus_TestMethods_CreatesDatabase,
     Durus_TestMethods_CreatesSchema,
     Durus_TestMethods_EvolvesSchemata,
-#     Duruses_TestMethods_CreatesDatabase,
-#     Duruses_TestMethods_CreatesSchema,
-#     Duruses_TestMethods_EvolvesSchemata,
+#     Xdserver_TestMethods_CreatesDatabase,
+#     Xdserver_TestMethods_CreatesSchema,
+#     Xdserver_TestMethods_EvolvesSchemata,
     )
 
 if sys.platform == 'win32':
@@ -158,8 +158,8 @@ class DurusBackend(object):
         self.conn.abort()
 
 
-class DurusesBackend(object):
-    """Schevo backend that directly uses Duruses 3.9."""
+class XdserverBackend(object):
+    """Schevo backend that directly uses Xdserver 3.9."""
 
     DEFAULT_CACHE_SIZE = 100000
 
@@ -168,7 +168,7 @@ class DurusesBackend(object):
     cache_size=%(DEFAULT_CACHE_SIZE)i (int)
         Maximum number of objects to keep in the cache.
 
-    client=None (duruses.client.Client instance)
+    client=None (xdclient.client.Client instance)
         An existing client connection to use; overrides host and port in URL.
     """ % locals()
 
@@ -180,15 +180,15 @@ class DurusesBackend(object):
 
     conflict_exceptions = (ConflictError,)
 
-#     TestMethods_CreatesDatabase = Duruses_TestMethods_CreatesDatabase
-#     TestMethods_CreatesSchema = Duruses_TestMethods_CreatesSchema
-#     TestMethods_EvolvesSchemata = Duruses_TestMethods_EvolvesSchemata
+#     TestMethods_CreatesDatabase = Xdserver_TestMethods_CreatesDatabase
+#     TestMethods_CreatesSchema = Xdserver_TestMethods_CreatesSchema
+#     TestMethods_EvolvesSchemata = Xdserver_TestMethods_EvolvesSchemata
 
     def __init__(self,
                  database,
                  cache_size=DEFAULT_CACHE_SIZE,
-                 host=duruses.client.DEFAULT_HOST,
-                 port=duruses.client.DEFAULT_PORT,
+                 host=xdclient.client.DEFAULT_HOST,
+                 port=xdclient.client.DEFAULT_PORT,
                  client=None,
                  ):
         self.database = database
@@ -231,7 +231,7 @@ class DurusesBackend(object):
             if self.client is not None:
                 self.storage = self.client.storage(self.database)
             elif None not in (self.host, self.port):
-                self.client = duruses.client.Client(self.host, self.port)
+                self.client = xdclient.client.Client(self.host, self.port)
                 self.storage = self.client.storage(self.database)
             # Connect to storage.
             self.conn = Connection(

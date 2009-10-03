@@ -209,7 +209,7 @@ class Durus_TestMethods_EvolvesSchemata(Durus_TestMethods_CreatesDatabase):
 # ------------------------------------------------------------------------
 
 
-# class Duruses_TestMethods_CreatesDatabase(object):
+# class Xdserver_TestMethods_CreatesDatabase(object):
 
 #     __test__ = False
 
@@ -302,7 +302,7 @@ class Durus_TestMethods_EvolvesSchemata(Durus_TestMethods_CreatesDatabase):
 #         db.backend.close()
 
 
-# class Duruses_TestMethods_CreatesSchema(Duruses_TestMethods_CreatesDatabase):
+# class Xdserver_TestMethods_CreatesSchema(Xdserver_TestMethods_CreatesDatabase):
 
 #     __test__ = False
 
@@ -344,7 +344,7 @@ class Durus_TestMethods_EvolvesSchemata(Durus_TestMethods_CreatesDatabase):
 #         return db
 
 
-# class Duruses_TestMethods_EvolvesSchemata(Duruses_TestMethods_CreatesDatabase):
+# class Xdserver_TestMethods_EvolvesSchemata(Xdserver_TestMethods_CreatesDatabase):
 
 #     __test__ = False
 
