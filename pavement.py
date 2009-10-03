@@ -79,7 +79,7 @@ else:
         include_package_data=True,
         zip_safe=False,
         install_requires=[
-            'duruses >= 3.9',
+            'xdserver >= 3.9',
         ],
         dependency_links = [
             'http://pypi.python.org/pypi/SchevoDurus',
