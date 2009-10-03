@@ -87,7 +87,7 @@ else:
         ],
         tests_require=[
             'nose >= 0.11.0',
-            'schevo',
+            'schevo == dev, >= 3.1.0dev-20091002',
         ],
         test_suite='nose.collector',
         entry_points = """
