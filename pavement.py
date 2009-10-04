@@ -81,10 +81,10 @@ else:
         install_requires=[
             'xdserver >= 3.9',
         ],
-        dependency_links = [
-            'http://pypi.python.org/pypi/SchevoDurus',
-            'http://www.schevo.org/eggs/',
-        ],
+#         dependency_links = [
+#             'http://pypi.python.org/pypi/SchevoDurus',
+#             'http://www.schevo.org/eggs/',
+#         ],
         tests_require=[
             'nose >= 0.11.0',
             'schevo == dev, >= 3.1.0dev-20091002',
