@@ -97,13 +97,6 @@ else:
 
 
     @task
-    @needs('generate_setup', 'minilib', 'setuptools.command.sdist')
-    def sdist():
-        """Overrides sdist to make sure that our setup.py is generated."""
-        pass
-
-
-    @task
     @needs(['paver.doctools.cog', 'paver.doctools.html', 'paver.doctools.uncog'])
     def html():
         pass
